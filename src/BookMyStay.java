@@ -1,5 +1,4 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 abstract class Room {
 
@@ -54,19 +53,36 @@ class RoomInventory {
     }
 }
 
-class RoomSearchService {
+class Reservation {
 
-    void searchAvailableRooms(Room[] rooms, RoomInventory inventory) {
+    String guestName;
+    String roomType;
 
-        for (Room room : rooms) {
+    Reservation(String guestName, String roomType) {
+        this.guestName = guestName;
+        this.roomType = roomType;
+    }
 
-            int available = inventory.getAvailability(room.roomType);
+    void displayRequest() {
+        System.out.println("Guest: " + guestName + " requested " + roomType);
+    }
+}
 
-            if (available > 0) {
-                room.displayRoomDetails();
-                System.out.println("Available Rooms: " + available);
-                System.out.println();
-            }
+class BookingRequestQueue {
+
+    Queue<Reservation> requestQueue;
+
+    BookingRequestQueue() {
+        requestQueue = new LinkedList<>();
+    }
+
+    void addRequest(Reservation reservation) {
+        requestQueue.offer(reservation);
+    }
+
+    void displayRequests() {
+        for (Reservation r : requestQueue) {
+            r.displayRequest();
         }
     }
 }
@@ -75,20 +91,17 @@ public class BookMyStay {
 
     public static void main(String[] args) {
 
-        Room single = new SingleRoom();
-        Room doubleRoom = new DoubleRoom();
-        Room suite = new SuiteRoom();
+        BookingRequestQueue bookingQueue = new BookingRequestQueue();
 
-        Room[] rooms = {single, doubleRoom, suite};
+        bookingQueue.addRequest(new Reservation("Alice", "Single Room"));
+        bookingQueue.addRequest(new Reservation("Bob", "Double Room"));
+        bookingQueue.addRequest(new Reservation("Charlie", "Suite Room"));
 
-        RoomInventory inventory = new RoomInventory();
-        RoomSearchService searchService = new RoomSearchService();
-
-        System.out.println("Book My Stay - Hotel Booking System v4.0");
+        System.out.println("Book My Stay - Hotel Booking System v5.0");
         System.out.println();
-        System.out.println("Available Rooms");
+        System.out.println("Booking Requests in Queue");
         System.out.println();
 
-        searchService.searchAvailableRooms(rooms, inventory);
+        bookingQueue.displayRequests();
     }
 }
